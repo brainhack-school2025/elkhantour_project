@@ -20,6 +20,10 @@ Learn how to :
 3. Develop a sustainable and easy-to-use python package with pipy
 4. Produce interactive plots and interactive website ✨
  
+ *Proposed Pipeline Structure (Subject to Change)*
+
+<img title="Tentative idea of the structure of the pipeline" alt="Alt text" src="HALFpipe-cwas.drawio.png">
+
 ## 🧰 Tools 
 This project uses the following tools and standards to ensure reproducibility, openness, and long-term usability:
 - **Datalad** : To download datasets with specific versions or subsets of a datasets
