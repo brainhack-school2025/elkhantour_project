@@ -45,7 +45,7 @@ To test on real data, a subset of preprocessed data with HALFpipe from the [UCLA
 ## 🗓️ Deliverables 
 *Code development:*
 - Python scripts with functions to perform the CWAS
-- A GitHub action repository that automatically test new request from users
+- A GitHub repository that automatically test new request from users using Github Actions
 - A python package ready to be used
 - A Container
 
