@@ -1,5 +1,5 @@
 # HALFpipe-cwas
-
+### Week 2 project overview slides
 This project is developed as part of BrainHack School 2025 in Montreal. The Week 2 project overview slides are available [here](https://docs.google.com/presentation/d/1BFQEd32ZGSvIpQaBQh5KjRjrZ0RL78illSvqR80Dr_E/edit?usp=sharing).
 
 ## 📚 Background 
