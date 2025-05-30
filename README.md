@@ -65,3 +65,13 @@ To test on real data, a subset of preprocessed data with HALFpipe from the [UCLA
 This library will be based on previous published code by Dr. Clara A. Moreau. 
 
 The original version of the scripts can be found here : https://github.com/claramoreau9/NeuropsychiatricCNVs_Connectivity
+
+## 👋 About me
+<a href="https://github.com/claraElk">
+   <img src="https://avatars.githubusercontent.com/u/85646791?v=4?s=100" width="100px;" alt=""/>
+   <br /><sub><b>Clara El Khantour</b></sub>
+</a>
+
+Hi! I'm Clara, I'm a PhD student in Psychiatry at the Université de Montréal. I completed a bachelor's degree in cognitive neuroscience, followed by a master's in neurosciences, during which I developed an interest in computational neuroscience and neuroimaging analyses.
+
+My phD project is focusing on the use of neuroimaging to predict the prognosis in eating disorders. I also have projects in collaboration with international initiatives such as the ENIGMA-Eating Disorders working group. Through this Brainhack project, I aim to acquire skills in tool development and contribute to open, collaborative science.
