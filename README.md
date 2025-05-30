@@ -28,7 +28,7 @@ Learn how to :
 
 ## 🧰 Tools 
 This project uses the following tools and standards to ensure reproducibility, openness, and long-term usability:
-- **Python scripts** : To write the functions and be able to test them
+- **Python scripts** : To write functions and be able to test them
 - **Git & GitHub**: 
    - Enables version control and promotes open-source, collaborative development of the library.
    - Implements automated testing and continuous integration to maintain code quality during development (Git Actions).
