@@ -1,5 +1,7 @@
 # HALFpipe-cwas
 
+This project is developed as part of BrainHack School 2025 in Montreal. The Week 2 project overview slides are available [here](https://docs.google.com/presentation/d/1BFQEd32ZGSvIpQaBQh5KjRjrZ0RL78illSvqR80Dr_E/edit?usp=sharing).
+
 ## 📚 Background 
 The reproducibility crisis in neuroimaging has affected many research domains, and psychiatric research is no exception <sup>[1](https://doi.org/10.1016/j.bpsc.2022.12.006)</sup>. Indeed, psychiatric studies using neuroimaging tools have long struggled with poor reproducibility, largely due to small sample sizes and heterogeneity in analysis methods.
 
