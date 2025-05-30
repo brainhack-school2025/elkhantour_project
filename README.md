@@ -28,7 +28,7 @@ Learn how to :
 
 ## 🧰 Tools 
 This project uses the following tools and standards to ensure reproducibility, openness, and long-term usability:
-- **Datalad** : To download datasets with specific versions or subsets of a datasets
+- **Python scripts** : To write the functions and be able to test them
 - **Git & GitHub**: 
    - Enables version control and promotes open-source, collaborative development of the library.
    - Implements automated testing and continuous integration to maintain code quality during development (Git Actions).
@@ -36,6 +36,7 @@ This project uses the following tools and standards to ensure reproducibility, o
 - **Python Packaging with pipy**: Distributes the tool as an installable open-source Python library for easy integration and reuse.
 - **Container (Docker)**: Ensures cross-platform compatibility and promotes reproducible research.
 - Interactive documentation : Provides runnable examples directly on the website for users to test and explore.
+   - **Jupyter Notebooks**
    - **Plots with Plotly**
    - **Website with MyST or Sphynx**
 
