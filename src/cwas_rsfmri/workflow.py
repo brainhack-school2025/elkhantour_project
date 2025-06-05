@@ -1,0 +1,99 @@
+from tqdm import tqdm
+
+from cwas_rsfmri.utils.phenotype import load_phenotype
+from cwas_rsfmri.utils.files import verify_atlas_files, find_halfpipe_output, create_output_directory
+from cwas_rsfmri.utils.subject import find_valid_subjects
+from cwas_rsfmri.utils.reject_fd_qc import filter_by_fd #filter_by_qc
+from cwas_rsfmri.utils.connectome import process_connectivity_matrix
+from cwas_rsfmri.utils.stats import define_regressors, glm_wrap_cc, summarize_glm, save_glm
+
+def run_pipeline(bids_dir, output_dir, pheno_p, 
+                 atlas_file, atlas, group,
+                 scanner, sequence, medication, 
+                 case_name, control_name, session, 
+                 task, run, feature): 
+
+    create_output_directory(output_dir)
+
+    dict_halfpipe = find_halfpipe_output(bids_dir)
+
+    # 1. Verify the phenotype file
+    df = load_phenotype(pheno_p, 
+                        diagnosis_col=group, # Hardcoded required columns
+                        subject_col="participant_id", 
+                        age_col="age", 
+                        sex_col="gender", 
+                        scanner_col=scanner,
+                        sequence=sequence, medication=medication,
+                        case_name=case_name, control_name=control_name,
+                        )
+    
+    # 2. Verify atlas location and format: only accept tsv file
+    conn_mask, roi_labels = verify_atlas_files(atlas_file)
+
+    # 3. Find number of subjects processed by HALFpipe, in case some subjects failed
+    df_filtered = find_valid_subjects(bids_dir=bids_dir, 
+                                         pheno=df, 
+                                         session=session, 
+                                         connectome_t=dict_halfpipe['connectome_t'], 
+                                         run=run, 
+                                         task=task, 
+                                         atlas=atlas, 
+                                         feature=feature, 
+                                         out_p=output_dir
+                                      )
+
+    # 4. Reject based on bad QC & FD threshold
+    # pheno_filtered_qc = filter_by_qc(dict_halfpipe['json_exclude_qc_path'], pheno_filtered, out_p=output_dir)
+
+    # 5. Reject subject based on FD>0.5
+    pheno_filtered_qc_fd = filter_by_fd(
+                            pheno_filtered_qc=df_filtered, # change pheno_filtered with pheno_filtered_qc if you have run step 4.
+                            derivatives_p=bids_dir,
+                            confounds_json=dict_halfpipe['confounds_json'],
+                            out_p=output_dir,
+                            session=session,
+                            task=task,
+                            run=run,
+                            feature=feature
+                            )
+
+    # Extract feature settings and validate atlases
+    # feature_settings, common_atlas = extract_feature_settings(dict_halfpipe['json_spec_path'])
+        
+    # Define regressors
+    regressors = define_regressors(scanner, sequence, medication)
+
+    # Process each feature
+    print(f"\nProcessing feature: {feature}")
+    
+    # Process connectivity matrix
+    conn_stack, final_df = process_connectivity_matrix(
+        pheno_filtered_fd=pheno_filtered_qc_fd,
+        connectome_t=dict_halfpipe['connectome_t'],
+        feature=feature,
+        atlas=atlas,
+        bids_dir=bids_dir,
+        conn_mask=conn_mask,
+        session=session, 
+        task=task, 
+        run=run)
+    
+    # Perform CWAS analysis
+    print(final_df)
+    glm_con = glm_wrap_cc(conn_stack, final_df, 
+                            group=group, case=1, control=0, 
+                            regressors=regressors, report=True)
+    
+    # Get results
+    table_con, table_stand_beta_con, table_qval_con = summarize_glm(
+        glm_con, conn_mask, roi_labels
+    )
+
+
+    save_glm(output_dir, table_con, 
+            table_stand_beta_con, table_qval_con, 
+            conn_mask, roi_labels,
+            case_name, control_name, 
+            feature, atlas)
+

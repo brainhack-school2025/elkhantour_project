@@ -1,0 +1,23 @@
+[project]
+name = "cwas-rsfmri"
+version = "0.0.1"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "claraElk", email = "clara.elkhantour@gmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy<2",
+    "pandas>=2.3.0",
+    "scikit-learn>=1.6.1",
+    "statsmodels>=0.14.4",
+    "tqdm>=4.67.1",
+]
+
+[project.scripts]
+cwas-rsfmri = "cwas_rsfmri:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
