@@ -15,7 +15,7 @@ def find_valid_subjects(bids_dir, pheno, session, connectome_t, run, task, atlas
     # Find subjects processed by HALFpipe
     processed_subjects = set()
 
-    for rid, row in tqdm(pheno.iterrows()):
+    for _, row in tqdm(pheno.iterrows()):
         file_path = os.path.join(
             bids_dir,
             connectome_t.format(
@@ -75,15 +75,17 @@ def find_subset(pheno, column, cases=None):
     subset_mask = np.array(~pheno[column].isnull())
     
     if cases is not None and not not cases:
-        print("in cases")
         all_cases = pheno.loc[subset_mask][column].unique()
+
         try:
             case_available = np.array([True if case in all_cases else False for case in cases])
+
         except TypeError as e:
             raise Exception(f'the attribute "cases" needs to be iterable but is: {type(cases)}') from e
+        
         if not all(case_available):
             if not any(case_available):
-                raise Exception(f'none of the requested cases of "{column}" are available')
+                raise Exception(f'none of the requested cases {cases} of "{column}" are available')
             else:
                 warnings.warn(
                     f'\nnot all requested cases of "{column}" are available: {list(zip(cases, case_available))}',

@@ -1,11 +1,11 @@
 from tqdm import tqdm
 
-from cwas_rsfmri.utils.phenotype import load_phenotype
-from cwas_rsfmri.utils.files import verify_atlas_files, find_halfpipe_output, create_output_directory
-from cwas_rsfmri.utils.subject import find_valid_subjects
-from cwas_rsfmri.utils.reject_fd_qc import filter_by_fd #filter_by_qc
-from cwas_rsfmri.utils.connectome import process_connectivity_matrix
-from cwas_rsfmri.utils.stats import define_regressors, glm_wrap_cc, summarize_glm, save_glm
+from cwas_rsfmri.phenotype import load_phenotype
+from cwas_rsfmri.files import verify_atlas_files, find_halfpipe_output, create_output_directory
+from cwas_rsfmri.subject import find_valid_subjects
+from cwas_rsfmri.reject_fd_qc import filter_by_fd #filter_by_qc
+from cwas_rsfmri.connectome import process_connectivity_matrix
+from cwas_rsfmri.stats import define_regressors, glm_wrap_cc, summarize_glm, save_glm
 
 def run_pipeline(bids_dir, output_dir, pheno_p, 
                  atlas_file, atlas, group,
@@ -22,7 +22,7 @@ def run_pipeline(bids_dir, output_dir, pheno_p,
                         diagnosis_col=group, # Hardcoded required columns
                         subject_col="participant_id", 
                         age_col="age", 
-                        sex_col="gender", 
+                        sex_col="sex", 
                         scanner_col=scanner,
                         sequence=sequence, medication=medication,
                         case_name=case_name, control_name=control_name,
@@ -57,10 +57,7 @@ def run_pipeline(bids_dir, output_dir, pheno_p,
                             run=run,
                             feature=feature
                             )
-
-    # Extract feature settings and validate atlases
-    # feature_settings, common_atlas = extract_feature_settings(dict_halfpipe['json_spec_path'])
-        
+  
     # Define regressors
     regressors = define_regressors(scanner, sequence, medication)
 

@@ -47,17 +47,18 @@ def validate_subject_ids(df, subject_file_path):
 
 def encode_diagnosis(df, case, control):
     allowed = [case, control]
+    print(f"Encoding diagnosis: {case} as 0, {control} as 1")
     invalid = df[~df["diagnosis"].isin(allowed)]
     if not invalid.empty:
         warnings.warn(f"Unexpected diagnosis values: {invalid['diagnosis'].unique()}")
     df = df[df["diagnosis"].isin(allowed)]
+    #TODO : add clear error message
     return df.replace({'diagnosis': {case: 0, control: 1}})
 
 
 def encode_sex(df):
-    # TODO: check if only 2 unique values are present
     sex_variable = df["sex"].unique()
-    print(sex_variable)
+    print(df)
 
     return df.replace({'sex': {sex_variable[0]: 0, sex_variable[1]: 1}})
 
@@ -92,6 +93,8 @@ def load_phenotype(
         col_map["medication"] = "medication"
 
     df = validate_columns(df, col_map)
+    print(df)
+
 
     if "scanner" in df.columns:
         print("Scanners found:", df["scanner"].unique())
@@ -100,7 +103,7 @@ def load_phenotype(
     if "medication" in df.columns:
         print("Medications found:", df["medication"].unique())
 
-    # df = validate_subject_ids(df, subject_file_path)
+    #df = validate_subject_ids(df, phenotype_file_path)
     df = encode_diagnosis(df, case_name, control_name)
     df = encode_sex(df)
     warn_on_invalid_age(df)

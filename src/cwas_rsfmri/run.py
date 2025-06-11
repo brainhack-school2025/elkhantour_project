@@ -1,11 +1,11 @@
 import argparse
 from cwas_rsfmri.workflow import run_pipeline
 
-if __name__ == "__main__":
+def parsers():
     parser = argparse.ArgumentParser()
     parser.add_argument("--bids_dir", required=True, help="Path to the BIDS directory")
     parser.add_argument("--output_dir", required=True, help="Path to the output directory")
-    parser.add_argument("--phenotype-file", required=True, help="Path to the phenotype file")
+    parser.add_argument("--phenotype_file", required=True, help="Path to the phenotype file")
     
     parser.add_argument("--atlas", required=True, help="Atlas to use for the analysis")
     parser.add_argument("--atlas_file", required=True, help="Path to the atlas file")
@@ -29,10 +29,16 @@ if __name__ == "__main__":
     parser.add_argument("--medication", action="store_true", default=False, help="Include medication column in the phenotype file")
 
     args = parser.parse_args()
+
+    return args
+
+def main():
+    args = parsers()
+
     run_pipeline(bids_dir=args.bids_dir, 
                  output_dir=args.output_dir, 
                  pheno_p=args.phenotype_file, 
-                 atlas_file=args.atlas_path,
+                 atlas_file=args.atlas_file,
                  atlas=args.atlas, 
                  group=args.group,
                  scanner=args.scanner,

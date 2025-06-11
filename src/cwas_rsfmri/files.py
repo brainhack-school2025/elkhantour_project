@@ -17,24 +17,11 @@ def create_output_directory(out_p):
 
 def find_halfpipe_output(working_directory):
     reports_dir = os.path.join(working_directory, "reports") # Path to report folder
-    # subject_p = os.path.join(working_directory, "subject-list.txt") # Subject list
-
-    # derivatives_p = os.path.join(working_directory, "derivatives") # Path to derivative folder
-    # connectome_p = os.path.join(derivatives_p, 'halfpipe') # Path to halfpipe derivative folder
-
-    # json_spec_path = os.path.join(working_directory, "spec.json")  # Path to spec.json file
-    # json_exclude_qc_path = os.path.join(reports_dir, 'exclude.json') # Path to exclude.json file
-
-    #### TODO : change this to accept giga-connectom output file format
-    # sub-{}_ses-{}_task-{}_run-{}_seg-{}_meas-PearsonCorrelation_desc-denoiseSimple_relmat.tsv
     connectome_t = os.path.join('{}', 'ses-{}', 'func', "{}_ses-{}_task-{}_run-{}_seg-{}_meas-PearsonCorrelation_desc-{}_relmat.tsv")
     confounds_json = os.path.join('{}_ses-{}_task-{}_run-{}_desc-{}_timeseries.json')
 
     dict_halfpipe = {
         "reports_dir": reports_dir,
-        # "subject_p": subject_p,
-        #"derivatives_p": derivatives_p,
-        # "connectome_p": connectome_p,
         "connectome_t": connectome_t,
         "confounds_json": confounds_json}
     
@@ -58,7 +45,6 @@ def verify_atlas_files(atlas_file) :
     
 
 def verify_working_directory(working_directory) :
-    # 2. Verify working directory
     print("\nVerifying working directory location ...")
     print("Path to access working directory:", working_directory)
     
@@ -67,7 +53,6 @@ def verify_working_directory(working_directory) :
     
 
 def verify_exclude_json(json_exclude_qc_path, reports_dir) :
-    # 3. Verify exclude.json in /reports
     print("\nVerifying exlude.json file location ...")
     print("Path to access reports folder:", reports_dir)
 

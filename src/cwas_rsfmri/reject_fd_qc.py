@@ -125,7 +125,8 @@ def filter_by_fd(pheno_filtered_qc, derivatives_p, confounds_json, out_p, sessio
                 data = json.load(file)  
 
             mean_fd_list.append(data["MeanFramewiseDisplacement"])
-    
+        
+    print("MeanFramewiseDisplacement", mean_fd_list)
     # Add mean FD values to phenotype dataframe
     pheno_filtered_qc.loc[:, 'mean_fd'] = mean_fd_list
     # pheno_filtered_qc.loc[:, 'max_fd'] = max_fd_list
