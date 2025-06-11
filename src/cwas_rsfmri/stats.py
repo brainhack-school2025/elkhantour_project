@@ -1,4 +1,5 @@
 import os
+import json
 import numpy as np
 import patsy as pat
 import pandas as pd
@@ -8,6 +9,7 @@ from statsmodels.sandbox.stats.multicomp import multipletests as stm
 
 from .connectome import conn2mat
 from .subject import find_subset
+from .files import report_file
 
 def define_regressors(scanner, sequence_col, medication_col):
     """
@@ -30,7 +32,7 @@ def define_regressors(scanner, sequence_col, medication_col):
         list_regressor.append('C(medication)')
     
     regressors = ' + '.join(list_regressor)
-    print(f'\nregressors used in the model: {regressors}')
+    print(f'\n📌 regressors used in the model: {regressors}')
     return regressors
 
 
@@ -51,8 +53,8 @@ def save_glm(out_p, table_con, table_stand_beta_con, table_qval_con, conn_mask, 
     table_stand_beta_con.to_csv(os.path.join(out_p, f'{base_filename}_standardized_betas.tsv'), sep='\t')
     table_qval_con.to_csv(os.path.join(out_p, f'{base_filename}_fdr_corrected_pvalues.tsv'), sep='\t')
     
-    print(f"Completed processing for feature: {feature}")
-    print(f"Results saved to: {os.path.join(out_p, f'{base_filename}.tsv')}")
+    print(f"\n✅ Completed processing for feature: {feature}")
+    print(f"✅ Results saved to: {os.path.join(out_p, f'{base_filename}.tsv')}")
     
     return out_table, stand_beta_table, qval_table
 
@@ -79,7 +81,7 @@ def find_contrast(design_matrix, contrast):
     # Find the contrast column
     contrast_columns = [(col_id, col) for col_id, col in enumerate(design_matrix.columns) if f'{contrast}' in col]
     if not len(contrast_columns) == 1:
-        raise Exception(f'There is no single factor that matches {contrast}: {(list(design_matrix.columns))}')
+        raise Exception(f'❌ There is no single factor that matches {contrast}: {(list(design_matrix.columns))}')
     return contrast_columns
 
 
@@ -98,10 +100,10 @@ def glm(data, design_matrix, contrast):
 
     return betas, pvals
 
-def glm_wrap_cc(conn, pheno, group, case, control, regressors='', report=False):
+def glm_wrap_cc(out_p, conn, pheno, group, case, control, regressors='', report=False):
     # Make sure pheno and conn have the same number of cases
     if not conn.shape[0] == pheno.shape[0]:
-        print(f'Conn ({conn.shape[0]}) and pheno ({pheno.shape[0]}) must be same number of cases')
+        print(f'❌ Connectivity matrix ({conn.shape[0]}) and phenotype file ({pheno.shape[0]}) must be same number of cases')
 
     # Define the subset of the sample
     sub_mask, case_masks = find_subset(pheno, group, [case, control])
@@ -113,13 +115,26 @@ def glm_wrap_cc(conn, pheno, group, case, control, regressors='', report=False):
     n_data = sub_conn.shape[1]
     
     if report:
-        print(f'Selected sample based on group variable {group}.\n'
-              f'cases: {case} (n={n_case})\n'
-              f'controls: {control} (n={n_control})\n'
-              f'original sample: n={pheno.shape[0]}; new sample: n={n_sub}\n'
-              f'{n_data} data points available\n'
-              f'standardized estimators are based on {group}=={control}')
+        summary_data = {
+              f'Selected sample based on group variable': f'{group}',
+              f'cases {case}': f'n={n_case}',
+              f'controls {control}': f'n={n_control}',
+              f'original sample': f'n={pheno.shape[0]}',
+              f'new sample': f'n={n_sub}',
+              f'data points available': f'{n_data}',
+              f'standardized estimators are based on {group}': f'{control}'
+              }
+        report_file(out_p, summary_data)
 
+        print(f'\n⏳ Performing CWAS. This might take few minutes.\n')
+        for key, value in summary_data.items():
+            if isinstance(value, list):
+                print(f"{key}: {len(value)}")  # Or print all items if preferred
+            else:
+                print(f"{key}: {value}")
+        
+    # Standardize the connectivity matrix
+        
     stand_conn = standardize(sub_conn, case_masks[control])
 
     # Construct design matrix

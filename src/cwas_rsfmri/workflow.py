@@ -1,21 +1,19 @@
 from tqdm import tqdm
 
 from cwas_rsfmri.phenotype import load_phenotype
-from cwas_rsfmri.files import verify_atlas_files, find_halfpipe_output, create_output_directory
+from cwas_rsfmri.files import verify_atlas_files, find_bids_output, create_output_directory
 from cwas_rsfmri.subject import find_valid_subjects
 from cwas_rsfmri.reject_fd_qc import filter_by_fd #filter_by_qc
 from cwas_rsfmri.connectome import process_connectivity_matrix
 from cwas_rsfmri.stats import define_regressors, glm_wrap_cc, summarize_glm, save_glm
 
-def run_pipeline(bids_dir, output_dir, pheno_p, 
-                 atlas_file, atlas, group,
-                 scanner, sequence, medication, 
-                 case_name, control_name, session, 
+def run_pipeline(bids_dir, output_dir, pheno_p, atlas_file, atlas, group,
+                 scanner, sequence, medication, case_name, control_name, session, 
                  task, run, feature): 
 
     create_output_directory(output_dir)
 
-    dict_halfpipe = find_halfpipe_output(bids_dir)
+    dict_halfpipe = find_bids_output(bids_dir)
 
     # 1. Verify the phenotype file
     df = load_phenotype(pheno_p, 
@@ -60,9 +58,6 @@ def run_pipeline(bids_dir, output_dir, pheno_p,
   
     # Define regressors
     regressors = define_regressors(scanner, sequence, medication)
-
-    # Process each feature
-    print(f"\nProcessing feature: {feature}")
     
     # Process connectivity matrix
     conn_stack, final_df = process_connectivity_matrix(
@@ -77,8 +72,7 @@ def run_pipeline(bids_dir, output_dir, pheno_p,
         run=run)
     
     # Perform CWAS analysis
-    print(final_df)
-    glm_con = glm_wrap_cc(conn_stack, final_df, 
+    glm_con = glm_wrap_cc(output_dir, conn_stack, final_df, 
                             group=group, case=1, control=0, 
                             regressors=regressors, report=True)
     

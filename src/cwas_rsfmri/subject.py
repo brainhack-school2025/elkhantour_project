@@ -1,4 +1,3 @@
-import glob
 import os
 import json
 import warnings
@@ -6,8 +5,8 @@ from tqdm import tqdm
 import numpy as np
 
 def find_valid_subjects(bids_dir, pheno, session, connectome_t, run, task, atlas, feature, out_p):    
-    print("Identify subjects connectivity matrix ...")
-    print("This will take a moment, please do not interupt the process ...")
+    print("⏳ Identify subjects connectivity matrix ...")
+    print("This will take a moment, please do not interupt the process ...\n")
     
     # Find all subjects in phenotype file
     all_subjects = set(pheno['participant_id'])
@@ -26,11 +25,7 @@ def find_valid_subjects(bids_dir, pheno, session, connectome_t, run, task, atlas
         )
         
         if os.path.exists(file_path):
-            print("Found:", file_path)
             processed_subjects.add(row['participant_id'])
-        else:
-            print("Missing:", file_path)
-
         
     # Find unprocessed subjects
     unprocessed_subjects = all_subjects - processed_subjects
@@ -54,19 +49,19 @@ def find_valid_subjects(bids_dir, pheno, session, connectome_t, run, task, atlas
         json.dump(report, f, indent=4)
     
     # Print results
-    print("\n=== Summary HALFpipe processing ===")
+    print("\n=== Summary subjects processing ===")
     print(f"Total subjects: {len(all_subjects)}")
     print(f"Processed subjects: {len(processed_subjects)}")
     print(f"Unprocessed subjects: {len(unprocessed_subjects)}")
     
     if unprocessed_subjects:
-        print("\nSubjects not processed by HALFpipe:")
+        print("\n❗️ Subjects not processed:")
         for subject in sorted(unprocessed_subjects):
             print(f"- {subject}")
     else:
-        print("All subjects have been processed by HALFpipe!")
+        print("✅ All subjects have been processed!")
 
-    print(f"Information saved in:", report_file)
+    print(f"\n✅ Information saved in:", report_file)
     
     return pheno[pheno['participant_id'].isin(processed_subjects)].reset_index(drop=True)
 
@@ -81,14 +76,14 @@ def find_subset(pheno, column, cases=None):
             case_available = np.array([True if case in all_cases else False for case in cases])
 
         except TypeError as e:
-            raise Exception(f'the attribute "cases" needs to be iterable but is: {type(cases)}') from e
+            raise Exception(f'❌ the attribute "cases" needs to be iterable but is: {type(cases)}') from e
         
         if not all(case_available):
             if not any(case_available):
-                raise Exception(f'none of the requested cases {cases} of "{column}" are available')
+                raise Exception(f'❌ none of the requested cases {cases} of "{column}" are available')
             else:
                 warnings.warn(
-                    f'\nnot all requested cases of "{column}" are available: {list(zip(cases, case_available))}',
+                    f'\n❌ not all requested cases of "{column}" are available: {list(zip(cases, case_available))}',
                     RuntimeWarning)
                 
         case_masks = np.array([pheno[column] == case for case in cases])

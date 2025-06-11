@@ -26,7 +26,7 @@ def process_connectivity_matrix(pheno_filtered_fd, connectome_t, feature, atlas,
     Returns:
         tuple: (conn_stack, pheno_filtered_fd)
     """
-    print("Process connectivity matrices for valid subjects ...")
+    print("\n⏳ Process connectivity matrices for valid subjects ...")
 
        # Collect valid connectome paths
     valid_subject_paths = []
@@ -46,10 +46,8 @@ def process_connectivity_matrix(pheno_filtered_fd, connectome_t, feature, atlas,
             valid_subject_indices.append(index)  # Store index of valid subjects
 
     # Stack connectome data
-    print(conn_mask)
     conn_stack = np.array([pd.read_csv(p, sep='\t').values[conn_mask] for p in valid_subject_paths])
-
     
-    print(f"\nProcessing statistics for feature {feature} with atlas {atlas}:")
+    print(f"\n📌 Processing statistics for feature {feature} with atlas {atlas}:")
     
     return conn_stack, pheno_filtered_fd

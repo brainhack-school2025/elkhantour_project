@@ -7,6 +7,8 @@ import json
 from collections import defaultdict
 from tqdm import tqdm
 
+from .files import report_file
+
 def filter_by_qc(json_file_path, pheno_filtered, out_p):
     """
     Process ratings and clean phenotype table by removing subjects with bad ratings
@@ -16,7 +18,7 @@ def filter_by_qc(json_file_path, pheno_filtered, out_p):
         phenotype_path (str): Path to the phenotype CSV file
         output_path (str): Path where to save the cleaned phenotype table
     """
-    print("Identify subjects with bad QC ...")
+    print("⏳ Identify subjects with bad QC ...")
 
     # Dictionary to store subject ratings
     subject_ratings = defaultdict(lambda: {'good': 0, 'bad': 0, 'uncertain': 0})
@@ -91,7 +93,7 @@ def filter_by_qc(json_file_path, pheno_filtered, out_p):
         else:
             print(f"{key}: {value}")
             
-    print(f"Information saved in:", json_path)
+    print(f"✅ Information saved in:", json_path)
 
     return pheno_filtered_qc
 
@@ -106,68 +108,40 @@ def filter_by_fd(pheno_filtered_qc, derivatives_p, confounds_json, out_p, sessio
     Returns:
         tuple: (pheno_filtered_fd)
     """
-    print("\nReject subjects based on mean FD>0.5 ...")
-    print("This might take a moment, please do not interupt the process ...")
+    print("\n⏳ Reject subjects based on mean FD>0.5 ...")
+    print("This might take a moment, please do not interupt the process ...\n")
     
     # Find subjects processed by HALFpipe and collect their FD values
     mean_fd_list = []
-    max_fd_list = []
     
-    for rid, row in tqdm(pheno_filtered_qc.iterrows()):
+    for _, row in tqdm(pheno_filtered_qc.iterrows()):
         json_file_path = os.path.join(derivatives_p, row['participant_id'], 'ses-{}'.format(session), "func",
                                                 confounds_json.format(row['participant_id'], session, task, run, feature))
-        print("json_file_path", json_file_path)
         if os.path.exists(json_file_path) :
-            # max_fd = np.max(pd.read_csv(confounds_path[0], sep='\t')['framewise_displacement'])
-            # max_fd_list.append(max_fd)
             # Read the JSON file
             with open(json_file_path, 'r') as file:
                 data = json.load(file)  
 
             mean_fd_list.append(data["MeanFramewiseDisplacement"])
         
-    print("MeanFramewiseDisplacement", mean_fd_list)
     # Add mean FD values to phenotype dataframe
     pheno_filtered_qc.loc[:, 'mean_fd'] = mean_fd_list
-    # pheno_filtered_qc.loc[:, 'max_fd'] = max_fd_list
 
     # Filter out subjects with high mean framewise displacement (FD >= 0.5)
     pheno_filtered_fd_mean = pheno_filtered_qc[pheno_filtered_qc['mean_fd'] < 0.5]
     subjects_with_mean_rejection = pheno_filtered_qc[pheno_filtered_qc['mean_fd'] > 0.5]['participant_id']
     
-    
-    print("\nReject subjects based on max FD>0.5 ...")
-    
-    # Filter out subjects with high max framewise displacement (FD >= 3.0)
-    #pheno_filtered_fd_mean_max = pheno_filtered_fd_mean[pheno_filtered_fd_mean['max_fd'] < 3.0]
-    #subjects_with_max_rejection = pheno_filtered_fd_mean[pheno_filtered_fd_mean['max_fd'] > 3.0]['participant_id']
-
     # Define summary data
     summary_data = {
         "Total subjects before FD rejection": len(pheno_filtered_qc),
         "N Subjects with mean FD>0.5": len(subjects_with_mean_rejection),
-        #"N Subjects with max FD>3.0": len(subjects_with_max_rejection),
-        # "Total Subjects remaining after FD cleaning": len(pheno_filtered_fd_mean_max),
         "Subjects with mean FD>0.5": sorted(subjects_with_mean_rejection),
-        # "Subjects with max FD>3.0": sorted(subjects_with_max_rejection),
-
     }
 
     # Save summary to file
     # Load existing JSON if it exists
     json_path = os.path.join(out_p, 'cwas_subject_report.json')
-    if os.path.exists(json_path):
-        with open(json_path, 'r') as f:
-            existing_data = json.load(f)
-    else:
-        existing_data = {}
-
-    # Update existing data with new summary
-    existing_data.update(summary_data)
-
-    # Save updated JSON
-    with open(json_path, 'w') as f:
-        json.dump(existing_data, f, indent=4)
+    report_file(out_p, summary_data)
 
     # Optionally still print summary
     print("\n=== Summary FD rejection ===")
@@ -177,6 +151,6 @@ def filter_by_fd(pheno_filtered_qc, derivatives_p, confounds_json, out_p, sessio
         else:
             print(f"{key}: {value}")
             
-    print(f"Information saved in:", json_path)
+    print(f"\n✅ Information saved in:", json_path)
     
     return pheno_filtered_fd_mean

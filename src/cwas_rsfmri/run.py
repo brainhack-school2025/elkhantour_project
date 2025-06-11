@@ -33,6 +33,7 @@ def parsers():
     return args
 
 def main():
+    print("\n🚀 Welcome to CWAS-rsfmri! \n")
     args = parsers()
 
     run_pipeline(bids_dir=args.bids_dir, 
