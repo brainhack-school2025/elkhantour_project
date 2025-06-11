@@ -81,6 +81,6 @@ To test the integration of the code, toy data will be generated.
 4. 	Gorgolewski KJ, Alfaro-Almagro F, Auer T, Bellec P, Capotă M, Chakravarty MM, et al. BIDS apps: Improving ease of use, accessibility, and reproducibility of neuroimaging data analysis methods. PLoS Comput Biol. 2017;13: e1005209.
 
 ## ✨ Aknowledgements
-This library will be based on previous published code by Dr. Clara A. Moreau & Dr. Sebastien Ursh
+This library will be based on previous published code by Dr. Clara A. Moreau & Dr. Sebastien Urchs
 
 The original version of the scripts can be found here : https://github.com/claramoreau9/NeuropsychiatricCNVs_Connectivity
