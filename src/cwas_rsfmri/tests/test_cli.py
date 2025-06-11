@@ -1,6 +1,5 @@
 from cwas_rsfmri.run import run_pipeline
 from importlib import resources
-import pytest
 import os
 import json
 
@@ -74,8 +73,8 @@ def create_dummy_data(bids_dir):
 
         create_dummy_json(bids_dir, sub)
 
-def test_smoke():
-    bids_dir = resources.files("cwas_rsfmri") / "tests/data/bids"
+def test_smoke(tmpdir):
+    bids_dir = tmpdir.mkdir("data").mkdir("bids")
     #non_bids_dir = tmp_path / "non_bids"
     atlas_file = os.path.join(bids_dir, "example_atlas.tsv")
     phenotype_file = os.path.join(bids_dir, "phenotype.tsv")
