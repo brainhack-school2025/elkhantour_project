@@ -1,5 +1,4 @@
 import os
-import glob
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
@@ -15,16 +14,6 @@ def conn2mat(conn, mask):
 def process_connectivity_matrix(pheno_filtered_fd, connectome_t, feature, atlas, bids_dir, conn_mask, session, task, run):
     """
     Process connectivity matrices for valid subjects
-    
-    Args:
-        pheno_filtered_fd (pd.DataFrame): Filtered phenotype data with FD < 0.5
-        feature (str): Feature name
-        atlas (str): Atlas name
-        connectome_p (str): Path to connectome directory
-        conn_mask (array): Mask for connectome data
-    
-    Returns:
-        tuple: (conn_stack, pheno_filtered_fd)
     """
     print("\n⏳ Process connectivity matrices for valid subjects ...")
 

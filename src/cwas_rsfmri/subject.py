@@ -15,15 +15,10 @@ def find_valid_subjects(bids_dir, pheno, session, connectome_t, run, task, atlas
     processed_subjects = set()
 
     for _, row in tqdm(pheno.iterrows()):
-        file_path = os.path.join(
-            bids_dir,
-            connectome_t.format(
-                row['participant_id'], session, 
-                row['participant_id'], session, 
-                task, run, atlas, feature
-            )
-        )
-        
+        file_path = os.path.join(bids_dir, connectome_t.format(row['participant_id'], session, 
+                                                               row['participant_id'], session, 
+                                                               task, run, atlas, feature)
+                                                                )
         if os.path.exists(file_path):
             processed_subjects.add(row['participant_id'])
         

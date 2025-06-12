@@ -12,11 +12,6 @@ from .files import report_file
 def filter_by_qc(json_file_path, pheno_filtered, out_p):
     """
     Process ratings and clean phenotype table by removing subjects with bad ratings
-    
-    Args:
-        json_file_path (str): Path to the JSON file containing ratings
-        phenotype_path (str): Path to the phenotype CSV file
-        output_path (str): Path where to save the cleaned phenotype table
     """
     print("⏳ Identify subjects with bad QC ...")
 
@@ -85,11 +80,10 @@ def filter_by_qc(json_file_path, pheno_filtered, out_p):
     with open(json_path, 'w') as f:
         json.dump(existing_data, f, indent=4)
 
-    # Optionally still print summary
     print("\n=== Summary QC ===")
     for key, value in summary_data.items():
         if isinstance(value, list):
-            print(f"{key}: {len(value)}")  # Or print all items if preferred
+            print(f"{key}: {len(value)}")
         else:
             print(f"{key}: {value}")
             
@@ -100,13 +94,6 @@ def filter_by_qc(json_file_path, pheno_filtered, out_p):
 def filter_by_fd(pheno_filtered_qc, derivatives_p, confounds_json, out_p, session, task, run, feature):
     """
     Filter subjects based on framewise displacement (FD)
-    
-    Args:
-        pheno_filtered_qc (pd.DataFrame): Filtered phenotype data
-        derivatives_p (str): Path to derivatives directory
-    
-    Returns:
-        tuple: (pheno_filtered_fd)
     """
     print("\n⏳ Reject subjects based on mean FD>0.5 ...")
     print("This might take a moment, please do not interupt the process ...\n")
@@ -139,15 +126,13 @@ def filter_by_fd(pheno_filtered_qc, derivatives_p, confounds_json, out_p, sessio
     }
 
     # Save summary to file
-    # Load existing JSON if it exists
     json_path = os.path.join(out_p, 'cwas_subject_report.json')
     report_file(out_p, summary_data)
 
-    # Optionally still print summary
     print("\n=== Summary FD rejection ===")
     for key, value in summary_data.items():
         if isinstance(value, list):
-            print(f"{key}: {len(value)}")  # Or print all items if preferred
+            print(f"{key}: {len(value)}") 
         else:
             print(f"{key}: {value}")
             

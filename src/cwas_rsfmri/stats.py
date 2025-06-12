@@ -14,14 +14,6 @@ from .files import report_file
 def define_regressors(scanner, sequence_col, medication_col):
     """
     Define the list of regressors based on the provided columns.
-    
-    Args:
-        scanner (bool): Whether to include scanner as a regressor
-        sequence_col (bool): Whether to include sequence as a regressor
-        medication_col (bool): Whether to include medication as a regressor
-    
-    Returns:
-        list: List of regressors
     """
     list_regressor = ['age', 'C(sex)', 'mean_fd'] # Mandatory regressors
     if scanner : 
@@ -43,6 +35,7 @@ def save_glm(out_p, table_con, table_stand_beta_con, table_qval_con, conn_mask, 
 
     (fdr_pass, qval, _, _) = stm(table_con.pvals, alpha=0.05, method='fdr_bh')
     out_table['qval'] = qval
+    
     # Return to matrix form
     stand_beta_table = pd.DataFrame(conn2mat(out_table.stand_betas.values, conn_mask) , index=roi_labels, columns=roi_labels)
     qval_table = pd.DataFrame(conn2mat(out_table.pvals.values, conn_mask), index=roi_labels, columns=roi_labels)
@@ -56,13 +49,12 @@ def save_glm(out_p, table_con, table_stand_beta_con, table_qval_con, conn_mask, 
     print(f"\n✅ Completed processing for feature: {feature}")
     print(f"✅ Results saved to: {os.path.join(out_p, f'{base_filename}.tsv')}")
     
-    return out_table, stand_beta_table, qval_table
-
 
 def summarize_glm(glm_table, conn_mask, roi_labels):
     out_table = glm_table.copy()
     (fdr_pass, qval, _, _) = stm(glm_table.pvals, alpha=0.05, method='fdr_bh')
     out_table['qval'] = qval
+
     # Return to matrix form
     stand_beta_table = pd.DataFrame(conn2mat(out_table.stand_betas.values, conn_mask) , index=roi_labels, columns=roi_labels)
     qval_table = pd.DataFrame(conn2mat(out_table.pvals.values, conn_mask), index=roi_labels, columns=roi_labels)
@@ -134,7 +126,6 @@ def glm_wrap_cc(out_p, conn, pheno, group, case, control, regressors='', report=
                 print(f"{key}: {value}")
         
     # Standardize the connectivity matrix
-        
     stand_conn = standardize(sub_conn, case_masks[control])
 
     # Construct design matrix

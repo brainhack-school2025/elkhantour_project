@@ -6,7 +6,6 @@ from pathlib import Path
 import pandas as pd
 pd.set_option('future.no_silent_downcasting', True)
 
-
 def create_output(out_p) : 
     # Create output directory if it doesn't exist
     out_p = Path(out_p)
@@ -73,7 +72,6 @@ def load_phenotype(
     print(f"⏳ Reading phenotype file: {phenotype_file_path}")
     df = read_phenotype_file(phenotype_file_path)
 
-    # TODO : once approved, delete renaming of columns
     col_map = {
         subject_col: "participant_id",
         diagnosis_col: "diagnosis",
@@ -98,7 +96,6 @@ def load_phenotype(
     if medication:
         print("Medications found:", df["medication"].unique())
 
-    #df = validate_subject_ids(df, phenotype_file_path)
     df = encode_diagnosis(df, case_name, control_name)
     df = encode_sex(df)
     warn_on_invalid_age(df)

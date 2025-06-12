@@ -3,15 +3,6 @@ import json
 def extract_feature_settings(json_file_path):
     """
     Extract feature names and their settings from JSON file and create a table
-    
-    Args:
-        json_file_path (str): Path to the JSON file containing feature settings
-    
-    Returns:
-        tuple: (pd.DataFrame, str) containing feature settings and the common atlas name
-    
-    Raises:
-        ValueError: If different atlases are found across features
     """
     print("Identify variables based on spec.json ...")
     # Read the JSON file
