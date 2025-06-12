@@ -51,3 +51,5 @@ def main():
                  task=args.task, 
                  run=args.run, 
                  feature=args.feature)
+    
+    print("\n🎉 Pipeline finished! \n")

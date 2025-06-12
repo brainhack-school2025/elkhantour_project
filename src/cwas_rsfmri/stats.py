@@ -28,20 +28,17 @@ def define_regressors(scanner, sequence_col, medication_col):
     return regressors
 
 
-def save_glm(out_p, table_con, table_stand_beta_con, table_qval_con, conn_mask, roi_labels,
-             case_name, control_name, feature, common_atlas):
+def save_glm(out_p, table_con, table_stand_beta_con, 
+             table_qval_con, conn_mask, roi_labels,
+             case_name, control_name, feature, atlas):
     
     out_table = table_con.copy()
 
     (fdr_pass, qval, _, _) = stm(table_con.pvals, alpha=0.05, method='fdr_bh')
     out_table['qval'] = qval
     
-    # Return to matrix form
-    stand_beta_table = pd.DataFrame(conn2mat(out_table.stand_betas.values, conn_mask) , index=roi_labels, columns=roi_labels)
-    qval_table = pd.DataFrame(conn2mat(out_table.pvals.values, conn_mask), index=roi_labels, columns=roi_labels)
-
     # Save results
-    base_filename = f'cwas_{case_name}_{control_name}_rsfmri_{feature}_{common_atlas}'
+    base_filename = f'cwas_{case_name}_{control_name}_rsfmri_{feature}_{atlas}'
     table_con.to_csv(os.path.join(out_p, f'{base_filename}.tsv'), sep='\t')
     table_stand_beta_con.to_csv(os.path.join(out_p, f'{base_filename}_standardized_betas.tsv'), sep='\t')
     table_qval_con.to_csv(os.path.join(out_p, f'{base_filename}_fdr_corrected_pvalues.tsv'), sep='\t')

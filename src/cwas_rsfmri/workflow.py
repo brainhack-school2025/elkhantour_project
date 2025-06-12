@@ -2,6 +2,7 @@ from cwas_rsfmri.phenotype import load_phenotype
 from cwas_rsfmri.subject import find_valid_subjects
 from cwas_rsfmri.reject_fd_qc import filter_by_fd 
 from cwas_rsfmri.connectome import process_connectivity_matrix
+from cwas_rsfmri.plots import plot_interactive_matrix
 from cwas_rsfmri.stats import *
 from cwas_rsfmri.files import *
 
@@ -83,7 +84,8 @@ def run_pipeline(bids_dir, output_dir, pheno_p, atlas_file, atlas, group,
         )
 
     save_glm(
-        out_p=output_dir, table_con=table_con,
+        out_p=output_dir, 
+        table_con=table_con,
         table_stand_beta_con=table_stand_beta,
         table_qval_con=table_qval,
         conn_mask=conn_mask,
@@ -92,3 +94,9 @@ def run_pipeline(bids_dir, output_dir, pheno_p, atlas_file, atlas, group,
         control_name=control_name,
         feature=feature,
         atlas=atlas)
+    
+    plot_interactive_matrix(output_path=output_dir,
+                            beta_matrix=table_stand_beta, 
+                            pvalues_matrix=table_qval, 
+                            labels=roi_labels
+                            )
