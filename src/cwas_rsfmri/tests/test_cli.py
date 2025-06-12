@@ -1,7 +1,9 @@
 from cwas_rsfmri.run import run_pipeline
-from importlib import resources
+import numpy as np
+import pandas as pd
 import os
 import json
+
 
 def create_dummy_phenotype(bids_dir):
     # Create a dummy phenotype file
@@ -10,6 +12,28 @@ def create_dummy_phenotype(bids_dir):
         f.write("participant_id\tdiagnosis\tsex\tage\tmedication\tsequence\tscan\n")
         f.write(f"sub-01\tNDD\tM\t28\tOlanzapine\tT3\tSiemens\n")
         f.write(f"sub-02\tHC\tF\t32\tBeta\tT1\tCimax\n")
+
+def create_bids_dir_structure(bids_dir):
+    # Create dataset_description.json
+    dataset_description = {
+        "Name": "Dummy BIDS Dataset",
+        "BIDSVersion": "1.0.0",
+        "Authors": ["Dummy Author"],
+        "Acknowledgements": "This is a dummy dataset for testing purposes.",
+    }
+    
+    with open(os.path.join(bids_dir, 'dataset_description.json'), 'w') as f:
+        json.dump(dataset_description, f, indent=4)
+    
+    # Create meas-PearsonCorrelation_relmat.json
+    meas_json = {
+        "Name": "Pearson Correlation Connectivity Matrix",
+        "Description": "Connectivity matrix computed using Pearson correlation.",
+        "BIDSVersion": "1.0.0"
+    }
+    
+    with open(os.path.join(bids_dir, 'meas-PearsonCorrelation_relmat.json'), 'w') as f:
+        json.dump(meas_json, f, indent=4)
 
 def create_dummy_json(bids_dir, sub):
     confounds_json = os.path.join('{}_ses-{}_task-{}_run-{}_desc-{}_timeseries.json')
@@ -21,14 +45,9 @@ def create_dummy_json(bids_dir, sub):
     info = {
         "ConfoundRegressors" : [
             "cosine00",
-            "cosine01",
-            "cosine03",
             "rot_x",
-            "rot_x_derivative1",
             "rot_y",
-            "rot_y_derivative1",
             "rot_z",
-            "rot_z_derivative1",
         ],
         "ICAAROMANoiseComponents" : [
             "aroma_motion_01",
@@ -36,10 +55,9 @@ def create_dummy_json(bids_dir, sub):
             ],
         "NumberOfVolumesDiscardedByMotionScrubbing" : 0,
         "NumberOfVolumesDiscardedByNonsteadyStatesDetector" : 1,
-        "MeanFramewiseDisplacement" : 0.07,
+        "MeanFramewiseDisplacement" : 0.3,
         "SamplingFrequency" : 0.5
     }
-
 
     with open(json_file, "w") as outfile:
         json.dump(info, outfile, indent=6)
@@ -66,11 +84,15 @@ def create_dummy_data(bids_dir):
             f.write("0\tRegion1\n1\tRegion2\n2\tRegion3\n3\tRegion4\n")
 
         # Create dummy connectome data
-        # TODO : Write with numpy
         connectome_file = os.path.join(sub_dir, sub_connectome)
-        with open(connectome_file, 'w') as f:
-            f.write("0\t1\t2\t3\n0.1\t0.2\t0.3\t0.4\n0.2\t0.1\t0.4\t0.3\n0.3\t0.4\t0.1\t0.2\n0.4\t0.3\t0.2\t0.1\n")
-
+        connectome = np.random.uniform(-10, 10, size=(4, 4))
+        connectome = (connectome + connectome.T) / 2
+        np.fill_diagonal(connectome, 1)
+        
+        labels = [0, 1, 2, 3]
+        df = pd.DataFrame(connectome, columns=labels)
+        df.to_csv(connectome_file, sep="\t", float_format="%.4f", index=False)
+        
         create_dummy_json(bids_dir, sub)
 
 def test_smoke(tmpdir):
@@ -80,9 +102,10 @@ def test_smoke(tmpdir):
     phenotype_file = os.path.join(bids_dir, "phenotype.tsv")
     output_dir = os.path.join(bids_dir, "output")
 
+    create_bids_dir_structure(bids_dir)
     create_dummy_data(bids_dir)
     create_dummy_phenotype(bids_dir)
-
+    
     # Without scanner, sequence, medication
     run_pipeline(bids_dir=bids_dir, 
                 output_dir=output_dir, 

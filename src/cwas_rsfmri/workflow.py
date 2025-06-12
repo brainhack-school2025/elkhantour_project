@@ -1,69 +1,63 @@
-from tqdm import tqdm
-
 from cwas_rsfmri.phenotype import load_phenotype
-from cwas_rsfmri.files import verify_atlas_files, find_halfpipe_output, create_output_directory
 from cwas_rsfmri.subject import find_valid_subjects
-from cwas_rsfmri.reject_fd_qc import filter_by_fd #filter_by_qc
+from cwas_rsfmri.reject_fd_qc import filter_by_fd 
 from cwas_rsfmri.connectome import process_connectivity_matrix
-from cwas_rsfmri.stats import define_regressors, glm_wrap_cc, summarize_glm, save_glm
+from cwas_rsfmri.plots import plot_interactive_matrix
+from cwas_rsfmri.stats import *
+from cwas_rsfmri.files import *
 
-def run_pipeline(bids_dir, output_dir, pheno_p, 
-                 atlas_file, atlas, group,
-                 scanner, sequence, medication, 
-                 case_name, control_name, session, 
-                 task, run, feature): 
+def run_pipeline(bids_dir, output_dir, pheno_p, atlas_file, atlas, group,
+                scanner, sequence, medication, case_name, control_name, 
+                session, task, run, feature): 
+
+    bids_validation(bids_dir=bids_dir)
 
     create_output_directory(output_dir)
 
-    dict_halfpipe = find_halfpipe_output(bids_dir)
+    dict_halfpipe = find_bids_output(bids_dir)
 
-    # 1. Verify the phenotype file
-    df = load_phenotype(pheno_p, 
-                        diagnosis_col=group, # Hardcoded required columns
-                        subject_col="participant_id", 
-                        age_col="age", 
-                        sex_col="sex", 
+    # Verify the phenotype file
+    df = load_phenotype(pheno_p,
+                        diagnosis_col=group,
+                        subject_col="participant_id",
+                        age_col="age",
+                        sex_col="sex",
                         scanner_col=scanner,
                         sequence=sequence, medication=medication,
                         case_name=case_name, control_name=control_name,
                         )
-    
-    # 2. Verify atlas location and format: only accept tsv file
+  
+    # Verify atlas location and format
     conn_mask, roi_labels = verify_atlas_files(atlas_file)
 
-    # 3. Find number of subjects processed by HALFpipe, in case some subjects failed
-    df_filtered = find_valid_subjects(bids_dir=bids_dir, 
-                                         pheno=df, 
-                                         session=session, 
-                                         connectome_t=dict_halfpipe['connectome_t'], 
-                                         run=run, 
-                                         task=task, 
-                                         atlas=atlas, 
-                                         feature=feature, 
-                                         out_p=output_dir
-                                      )
+    # Find number of subjects
+    df_filtered = find_valid_subjects(
+        bids_dir=bids_dir,
+        pheno=df,
+        session=session,
+        connectome_t=dict_halfpipe['connectome_t'],
+        run=run,
+        task=task,
+        atlas=atlas,
+        feature=feature,
+        out_p=output_dir
+        )
 
-    # 4. Reject based on bad QC & FD threshold
-    # pheno_filtered_qc = filter_by_qc(dict_halfpipe['json_exclude_qc_path'], pheno_filtered, out_p=output_dir)
-
-    # 5. Reject subject based on FD>0.5
+    # Reject subject based on FD>0.5
     pheno_filtered_qc_fd = filter_by_fd(
-                            pheno_filtered_qc=df_filtered, # change pheno_filtered with pheno_filtered_qc if you have run step 4.
-                            derivatives_p=bids_dir,
-                            confounds_json=dict_halfpipe['confounds_json'],
-                            out_p=output_dir,
-                            session=session,
-                            task=task,
-                            run=run,
-                            feature=feature
-                            )
-  
+        pheno_filtered_qc=df_filtered,
+        derivatives_p=bids_dir,
+        confounds_json=dict_halfpipe['confounds_json'],
+        out_p=output_dir,
+        session=session,
+        task=task,
+        run=run,
+        feature=feature
+        )
+
     # Define regressors
     regressors = define_regressors(scanner, sequence, medication)
 
-    # Process each feature
-    print(f"\nProcessing feature: {feature}")
-    
     # Process connectivity matrix
     conn_stack, final_df = process_connectivity_matrix(
         pheno_filtered_fd=pheno_filtered_qc_fd,
@@ -73,24 +67,36 @@ def run_pipeline(bids_dir, output_dir, pheno_p,
         bids_dir=bids_dir,
         conn_mask=conn_mask,
         session=session, 
-        task=task, 
-        run=run)
-    
+        task=task,
+        run=run
+        )
+
     # Perform CWAS analysis
-    print(final_df)
-    glm_con = glm_wrap_cc(conn_stack, final_df, 
+    glm_con = glm_wrap_cc(output_dir, conn_stack, final_df,
                             group=group, case=1, control=0, 
                             regressors=regressors, report=True)
-    
+
     # Get results
-    table_con, table_stand_beta_con, table_qval_con = summarize_glm(
-        glm_con, conn_mask, roi_labels
-    )
+    table_con, table_stand_beta, table_qval = summarize_glm(
+        glm_con, 
+        conn_mask, 
+        roi_labels
+        )
 
-
-    save_glm(output_dir, table_con, 
-            table_stand_beta_con, table_qval_con, 
-            conn_mask, roi_labels,
-            case_name, control_name, 
-            feature, atlas)
-
+    save_glm(
+        out_p=output_dir, 
+        table_con=table_con,
+        table_stand_beta_con=table_stand_beta,
+        table_qval_con=table_qval,
+        conn_mask=conn_mask,
+        roi_labels=roi_labels,
+        case_name=case_name,
+        control_name=control_name,
+        feature=feature,
+        atlas=atlas)
+    
+    plot_interactive_matrix(output_path=output_dir,
+                            beta_matrix=table_stand_beta, 
+                            pvalues_matrix=table_qval, 
+                            labels=roi_labels
+                            )
