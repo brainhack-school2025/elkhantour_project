@@ -18,13 +18,8 @@ def create_bids_dir_structure(bids_dir):
     dataset_description = {
         "Name": "Dummy BIDS Dataset",
         "BIDSVersion": "1.0.0",
-        "License": "CC0",
         "Authors": ["Dummy Author"],
         "Acknowledgements": "This is a dummy dataset for testing purposes.",
-        "HowToAcknowledge": "Please cite the original dataset.",
-        "Funding": [],
-        "ReferencesAndLinks": [],
-        "DatasetDOI": ""
     }
     
     with open(os.path.join(bids_dir, 'dataset_description.json'), 'w') as f:
@@ -51,11 +46,8 @@ def create_dummy_json(bids_dir, sub):
         "ConfoundRegressors" : [
             "cosine00",
             "rot_x",
-            "rot_x_derivative1",
             "rot_y",
-            "rot_y_derivative1",
             "rot_z",
-            "rot_z_derivative1",
         ],
         "ICAAROMANoiseComponents" : [
             "aroma_motion_01",
@@ -63,7 +55,7 @@ def create_dummy_json(bids_dir, sub):
             ],
         "NumberOfVolumesDiscardedByMotionScrubbing" : 0,
         "NumberOfVolumesDiscardedByNonsteadyStatesDetector" : 1,
-        "MeanFramewiseDisplacement" : np.random.uniform(0.1, 0.8),  # Random value for testing
+        "MeanFramewiseDisplacement" : 0.3,
         "SamplingFrequency" : 0.5
     }
 

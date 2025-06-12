@@ -71,7 +71,7 @@ def find_subset(pheno, column, cases=None):
             case_available = np.array([True if case in all_cases else False for case in cases])
 
         except TypeError as e:
-            raise Exception(f'❌ the attribute "cases" needs to be iterable but is: {type(cases)}') from e
+            raise Exception(f'❌ the attribute "cases" needs to be iterable but is: {type(cases)}')
         
         if not all(case_available):
             if not any(case_available):
