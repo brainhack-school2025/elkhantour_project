@@ -130,6 +130,7 @@ def glm_wrap_cc(out_p, conn, pheno, group, case, control, regressors='', report=
         contrast = f'C({group}, Treatment("{control}"))'
     else:
         contrast = f'C({group}, Treatment({control}))'
+        
     formula = ' + '.join((regressors, contrast))
     dmat = pat.dmatrix(formula, sub_pheno, return_type='dataframe')
 

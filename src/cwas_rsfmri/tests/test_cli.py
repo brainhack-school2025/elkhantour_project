@@ -93,7 +93,7 @@ def create_dummy_data(bids_dir):
 
         # Create dummy connectome data
         connectome_file = os.path.join(sub_dir, sub_connectome)
-        connectome = np.random.rand(4, 4)
+        connectome = np.random.uniform(-10, 10, size=(4, 4))
         connectome = (connectome + connectome.T) / 2
         np.fill_diagonal(connectome, 1)
         
