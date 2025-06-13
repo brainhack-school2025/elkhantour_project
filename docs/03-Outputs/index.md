@@ -1,7 +1,9 @@
-# 📊 Outputs
+# 📁 Outputs
 
 ## Report json file
-A json file will be generated in the output folder. This json contain the following information. You can verify if all subjects were processed, and which one were excluded.
+A json file will be generated in the output folder. 
+
+This json contain the following information. You can verify if all subjects were processed, and which one were excluded.
 
 ```json
 {
@@ -24,7 +26,7 @@ A json file will be generated in the output folder. This json contain the follow
 }
 ```
 
-## TSV file
+## TSV files
 3 tsv files are generated
 - beta maps
 - qvalues maps 

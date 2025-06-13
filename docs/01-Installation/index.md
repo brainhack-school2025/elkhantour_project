@@ -1,13 +1,13 @@
-# Installation
+# 🧰 Installation
 
 Welcome to cwas-rsfmri ! 🚀
 
-## 🧰 Installation via pip
-cwas-rsfmri is a python package. 
+## Installation via pip
+cwas-rsfmri is a python package to perform connectome wide association study (CWAS) on BIDS-formatted data. 
 
 To install this package, follow the following instructions. 
 
-We recommand that you first create a virtual envrionnement to avoid dependencies version incompabilities.
+We recommand that you create a virtual envrionnement to avoid dependencies version incompabilities.
 
 1. Clone the repository
 ```
