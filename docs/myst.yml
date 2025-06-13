@@ -1,0 +1,14 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+
+project:
+  id: 402fa25d-230d-4101-beb6-e9a28a97a911
+  title: CWAS-rsfmri
+  description: Python package for the analysis of resting-state fMRI data using the CWAS method.
+  # keywords: []
+  authors: ["Clara El Khantour"]
+  github: https://github.com/brainhack-school2025/elkhantour_project
+  # To autogenerate a Table of Contents, run "myst init --write-toc"
+
+site:
+  template: book-theme

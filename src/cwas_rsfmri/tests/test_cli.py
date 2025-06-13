@@ -3,16 +3,29 @@ import numpy as np
 import pandas as pd
 import os
 import json
+import random
 
-
-def create_dummy_phenotype(bids_dir):
-    # Create a dummy phenotype file
+def create_dummy_phenotype(bids_dir, subject_ids):
     phenotype_file = os.path.join(bids_dir, "phenotype.tsv")
-    with open(phenotype_file, 'w') as f:
-        f.write("participant_id\tdiagnosis\tsex\tage\tmedication\tsequence\tscan\n")
-        f.write(f"sub-01\tNDD\tM\t28\tOlanzapine\tT3\tSiemens\n")
-        f.write(f"sub-02\tHC\tF\t32\tBeta\tT1\tCimax\n")
 
+    diagnoses = ["NDD", "HC"]
+    sexes = ["M", "F"]
+    medications = ["Olanzapine", "Beta", "None", "Lithium"]
+    sequences = ["T1", "T2", "T3"]
+    scanners = ["Siemens", "Cimax", "Philips", "Siemens"]
+
+    with open(phenotype_file, 'w') as f:
+        f.write("participant_id\tdiagnosis\tsex\tage\tmedication\tsequence\tscanner\n")
+        for sub in subject_ids:
+            diagnosis = random.choice(diagnoses)
+            sex = random.choice(sexes)
+            age = random.randint(18, 65)
+            medication = random.choice(medications)
+            sequence = random.choice(sequences)
+            scanner = random.choice(scanners)
+            f.write(f"{sub}\t{diagnosis}\t{sex}\t{age}\t{medication}\t{sequence}\t{scanner}\n")
+
+# Example usage
 def create_bids_dir_structure(bids_dir):
     # Create dataset_description.json
     dataset_description = {
@@ -68,8 +81,9 @@ def create_dummy_data(bids_dir):
     # Create a dummy BIDS directory structure with 2 subjects
     # A matrix of 4x4
     connectome_t = os.path.join('{}', 'ses-{}', 'func')
-
-    for sub in ["sub-01", "sub-02"]:
+    sub_list = [f"sub-{i:02d}" for i in range(1, 15)] 
+    create_dummy_phenotype(bids_dir, sub_list)
+    for sub in sub_list :
         sub_dir = os.path.join(bids_dir, connectome_t.format(sub, "timepoint1"))
         os.makedirs(sub_dir, exist_ok=True)
         sub_connectome = "{}_ses-{}_task-{}_run-{}_seg-{}_meas-PearsonCorrelation_desc-{}_relmat.tsv".format(sub, 
@@ -97,6 +111,8 @@ def create_dummy_data(bids_dir):
 
 def test_smoke(tmpdir):
     bids_dir = tmpdir.mkdir("data").mkdir("bids")
+    # bids_dir = os.path.join("data", "bids")
+    print(f"BIDS directory created at: {bids_dir}")
     #non_bids_dir = tmp_path / "non_bids"
     atlas_file = os.path.join(bids_dir, "example_atlas.tsv")
     phenotype_file = os.path.join(bids_dir, "phenotype.tsv")
@@ -104,7 +120,6 @@ def test_smoke(tmpdir):
 
     create_bids_dir_structure(bids_dir)
     create_dummy_data(bids_dir)
-    create_dummy_phenotype(bids_dir)
     
     # Without scanner, sequence, medication
     run_pipeline(bids_dir=bids_dir, 
@@ -123,5 +138,45 @@ def test_smoke(tmpdir):
                 run="01",
                 feature="denoiseSimple")
     
-    # Expect X participants with FD mean >0.5
     assert os.path.exists(output_dir), "Output directory was not created"
+    assert os.path.isfile(os.path.join(output_dir, "cwas_NDD_HC_rsfmri_denoiseSimple_example_atlas_fdr_corrected_pvalues.tsv")), "Pval file was not created"
+    assert os.path.isfile(os.path.join(output_dir, "cwas_NDD_HC_rsfmri_denoiseSimple_example_atlas_standardized_betas.tsv")), "Beta file was not created"
+    assert os.path.isfile(os.path.join(output_dir, "cwas_NDD_HC_rsfmri_denoiseSimple_example_atlas.tsv")), "TSV file was not created"
+    assert os.path.isfile(os.path.join(output_dir, "cwas_report.json")), "Report file was not created"
+    assert os.path.isfile(os.path.join(output_dir, "interactive_heatmap.html")), "Plot file was not created"
+
+def test_smoke_with_all(tmpdir):
+    bids_dir = tmpdir.mkdir("data").mkdir("bids")
+    # bids_dir = os.path.join("data", "bids")
+    print(f"BIDS directory created at: {bids_dir}")
+    #non_bids_dir = tmp_path / "non_bids"
+    atlas_file = os.path.join(bids_dir, "example_atlas.tsv")
+    phenotype_file = os.path.join(bids_dir, "phenotype.tsv")
+    output_dir = os.path.join(bids_dir, "output")
+
+    create_bids_dir_structure(bids_dir)
+    create_dummy_data(bids_dir)
+    
+    run_pipeline(bids_dir=bids_dir, 
+                output_dir=output_dir, 
+                atlas_file=atlas_file,
+                atlas="example_atlas", 
+                pheno_p=phenotype_file,
+                scanner=True, 
+                sequence=True, 
+                medication=False, 
+                group="diagnosis",
+                case_name="NDD", 
+                control_name="HC",
+                session="timepoint1",
+                task="task01",
+                run="01",
+                feature="denoiseSimple")
+    
+    assert os.path.exists(output_dir), "Output directory was not created"
+    assert os.path.isfile(os.path.join(output_dir, "cwas_NDD_HC_rsfmri_denoiseSimple_example_atlas_fdr_corrected_pvalues.tsv")), "Pval file was not created"
+    assert os.path.isfile(os.path.join(output_dir, "cwas_NDD_HC_rsfmri_denoiseSimple_example_atlas_standardized_betas.tsv")), "Beta file was not created"
+    assert os.path.isfile(os.path.join(output_dir, "cwas_NDD_HC_rsfmri_denoiseSimple_example_atlas.tsv")), "TSV file was not created"
+    assert os.path.isfile(os.path.join(output_dir, "cwas_report.json")), "Report file was not created"
+    assert os.path.isfile(os.path.join(output_dir, "interactive_heatmap.html")), "Plot file was not created"
+
