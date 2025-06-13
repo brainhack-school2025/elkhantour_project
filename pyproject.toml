@@ -1,7 +1,7 @@
 [project]
 name = "cwas-rsfmri"
 version = "0.0.1"
-description = "Add your description here"
+description = "Connectome Wide Association Study for fMRI connectomes"
 readme = "README.md"
 authors = [
     { name = "claraElk", email = "clara.elkhantour@gmail.com" }

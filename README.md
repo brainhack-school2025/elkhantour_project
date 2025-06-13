@@ -3,6 +3,8 @@
 The main goal of the `cwas-rsfmri` pipeline is to provide a easy and semi-flexible workflow to perform Connectome Wide Association Study (CWAS) on fmri connectivity matrix.
 This app follows a BIDS-App workflow.
 
+<img title="Workflow of the pipeline" alt="Alt text" src="workflow.png">
+
 ## 📌 Documentation
 ###  Website with full documentation
 To run this pipeline, see the full documentation here : https://brainhack-school2025.github.io/elkhantour_project/ 
@@ -23,7 +25,7 @@ pip install -e .
 This project is developed as part of BrainHack School 2025 in Montreal. The Week 2 project overview slides are available [here](https://docs.google.com/presentation/d/1BFQEd32ZGSvIpQaBQh5KjRjrZ0RL78illSvqR80Dr_E/edit?usp=sharing).
 
 ### Week 4 final presentation 🚀
-The Week 4 project overview slides are available [here](https://docs.google.com/presentation/d/1AT7jvhL63toRHIYBsFZYHyxpPp-cLphSkeC5kAkJMak/edit?usp=sharing).
+The Week 4 final project presentation is available [here](https://docs.google.com/presentation/d/1AT7jvhL63toRHIYBsFZYHyxpPp-cLphSkeC5kAkJMak/edit?usp=sharing).
 
 ## 📚 Background 
 The reproducibility crisis in neuroimaging has affected many research domains, and psychiatric research is no exception <sup>[1](https://doi.org/10.1016/j.bpsc.2022.12.006)</sup>. 
@@ -42,15 +44,14 @@ Learn how to :
 3. Develop a sustainable and easy-to-use python package
 4. Produce interactive plots and interactive website ✨
  
-<img title="Workflow of the pipeline" alt="Alt text" src="workflow.svg">
-
 ## 🧰 Tools used in Brain Hack School
 This project uses the following tools and standards to ensure reproducibility, openness, and long-term usability:
-- **Python scripts** : To write functions and be able to test them
+- **Python scripts** : To write functions, modules and be able to test them
 - **Git & GitHub**: 
-   - Enables version control and promotes open-source, collaborative development of the library.
-   - Implements automated testing and continuous integration to maintain code quality during development (Git Actions).
+   - *Public repo*: Enables version control and promotes open-source, collaborative development of the library.
+   - *GitHub Actions*: Implements automated testing and continuous integration to maintain code quality during development (Git Actions).
 - **BIDS Ecosystem**: Ensures compatibility with the BIDS standard, following the workflow of a BIDS App ([4](https://doi.org/10.1371/journal.pcbi.1005209)).
+    - For this package, we followed the [BEP-017 proposal](https://bids.neuroimaging.io/extensions/beps/bep_017.html)
 - **Python Packaging with uv**: Distributes the tool as an installable open-source Python library for easy integration and reuse.
 - Interactive documentation : Provides runnable examples directly on the website for users to test and explore.
    - **Jupyter Notebooks**
@@ -64,15 +65,47 @@ The data have been generated randomly using `numpy`.
 
 ## 🗓️ Deliverables in Week 4
 *Code development:*
-- Python scripts with functions to perform the CWAS
-- A GitHub repository that automatically test the integration from users using Github Actions
-- A python package ready to be used
+- Python scripts with functions to perform the CWAS: 
+    - The original code has been separated into modules and functions to facilitate collaborative work. 
+- A GitHub repository with integration test: 
+    - 2 integration tests have been implemented with toy data generated using `numpy` and `pandas`. 
+    - he tests are launched automatically on GitHub when new code is pushed or a pull request is under review. 
+- A python package ready to be used:
+    - Set up with UV 
 
 *Documentation:*
 - [A website](https://brainhack-school2025.github.io/elkhantour_project/) 
-   - documentation to run and install the Library
-   - interactive notebooks & plots
+   - documentation to run and install the Library. The website was generated using Myst Markdown.
+   - Jupyter notebooks & interactive plots: Interactive plots were produced using Plotly.
 
+## 🎉 Results
+
+### First accomplishement: Creation of the package and BIDS implementation 
+The pipeline is ready to be used on data in BIDS format (BEP-017) ! The tests have been made base on [Giga-connectome outputs](https://giga-connectome.readthedocs.io/en/latest/). 
+
+This package was initialize using UV. It makes this repo executable using `pip install .` via the [pyproject.toml](pyproject.toml) which was set up to:
+- Intall the requirements
+- Test the pipeline with pytest
+
+The main code is launched via [run.py](/src/cwas_rsfmri/run.py) which trigger [workflow.py](/src/cwas_rsfmri/workflow.py).
+
+### Second accomplishement: GitHub Action
+You can find the tests under [/src/cwas_rsfmri/tests](/src/cwas_rsfmri/tests). The tests were realized using [pytest](https://docs.pytest.org/en/stable/)
+
+As this package is a *glue* of multiple scipts, the tests created only check the integration of the pipeline. The tests have been made possible by creating toy data. For now, 2 tests are being performed : 
+1. With no option arguments (scan, sequence, medication).
+2. With all optional arguments.
+
+The tests for the integration are now performed on push (on main), and on pull request. 
+
+### Third accomplishement: the MYST Website 
+To provide a complete documentation and prove example of the outputs generated with this pipeline, a Website hosted on GitHub Pages was created.
+
+The documentation is updated and avalaible on the website: https://brainhack-school2025.github.io/elkhantour_project/
+
+<img title="Example of a plot generated with CWAS-rsfmri" alt="Alt text" src="example_cwas.png">
+
+To visualize the interactive figure, please see: https://brainhack-school2025.github.io/elkhantour_project/interactive-plots
 
 ## 📖 References
 1. 	Botvinik-Nezer R, Wager TD. Reproducibility in neuroimaging analysis: Challenges and solutions. Biol Psychiatry Cogn Neurosci Neuroimaging. 2023;8: 780–788.
