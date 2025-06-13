@@ -11,7 +11,7 @@ We recommand that you create a virtual envrionnement to avoid dependencies versi
 
 1. Clone the repository
 ```
-git clone https://github.com◊/brainhack-school2025/elkhantour_project.git
+git clone https://github.com/brainhack-school2025/elkhantour_project.git
 ```
 
 2. Install the package
