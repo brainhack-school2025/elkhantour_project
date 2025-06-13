@@ -24,9 +24,9 @@ def parsers():
     parser.add_argument("--control_id", type=str, required=True, help="ID for the control group")
 
     # Optional arguments
-    parser.add_argument("--scanner", action="store_true", default=False, help="Include scanner information")
-    parser.add_argument("--sequence", action="store_true", default=False, help="Include sequence column in the phenotype file")
-    parser.add_argument("--medication", action="store_true", default=False, help="Include medication column in the phenotype file")
+    parser.add_argument("--scanner", type=bool, default=False, help="Include scanner information")
+    parser.add_argument("--sequence", type=bool, default=False, help="Include sequence column in the phenotype file")
+    parser.add_argument("--medication", type=bool, default=False, help="Include medication column in the phenotype file")
 
     args = parser.parse_args()
 

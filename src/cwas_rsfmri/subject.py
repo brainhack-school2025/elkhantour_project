@@ -39,7 +39,7 @@ def find_valid_subjects(bids_dir, pheno, session, connectome_t, run, task, atlas
     os.makedirs(out_p, exist_ok=True)
     
     # Save report to JSON
-    report_file = os.path.join(out_p, 'cwas_subject_report.json')
+    report_file = os.path.join(out_p, 'cwas_report.json')
     with open(report_file, 'w') as f:
         json.dump(report, f, indent=4)
     

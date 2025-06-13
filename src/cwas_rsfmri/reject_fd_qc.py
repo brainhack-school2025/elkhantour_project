@@ -66,7 +66,7 @@ def filter_by_qc(json_file_path, pheno_filtered, out_p):
 
     # Save summary to file
     # Load existing JSON if it exists
-    json_path = os.path.join(out_p, 'cwas_subject_report.json')
+    json_path = os.path.join(out_p, 'cwas_report.json')
     if os.path.exists(json_path):
         with open(json_path, 'r') as f:
             existing_data = json.load(f)
@@ -126,7 +126,7 @@ def filter_by_fd(pheno_filtered_qc, derivatives_p, confounds_json, out_p, sessio
     }
 
     # Save summary to file
-    json_path = os.path.join(out_p, 'cwas_subject_report.json')
+    json_path = os.path.join(out_p, 'cwas_report.json')
     report_file(out_p, summary_data)
 
     print("\n=== Summary FD rejection ===")

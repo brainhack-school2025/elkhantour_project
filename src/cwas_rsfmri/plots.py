@@ -70,8 +70,9 @@ def plot_interactive_matrix(output_path, beta_matrix, pvalues_matrix, labels):
     filename = f'interactive_heatmap'
     output_path = os.path.join(output_path, "{}.html".format(filename))
     fig.write_html(
-        output_path,
-        include_plotlyjs='cdn',  # Use external CDN instead of embedding JS
-        full_html=True
+    output_path,
+    include_plotlyjs='cdn', 
+    full_html=True,         
+    config={"responsive": True} 
     )
     print(f"✅ Heatmap interactive saved in : {output_path}")

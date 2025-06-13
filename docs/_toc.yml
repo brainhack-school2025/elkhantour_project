@@ -1,0 +1,9 @@
+format: jb-book
+root: index
+
+sections:
+  - file: 01-Installation/index.md
+  - file: 02-Running/index.md
+  - file: 03-Outputs/index.md
+  - file: 03-Outputs/interactive_plots.ipynb
+
