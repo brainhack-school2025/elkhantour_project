@@ -28,7 +28,7 @@ To select specific task, run and atlas, please refer to your filename: `sub-{}_s
 
 `--atlas`: The name of your atlas as indicated in your filename.
 
-`--feature`: Decription of the feature used for the denoising pipeline.
+`--feature`: Description of the feature used for the denoising pipeline.
 
 `--session`: Session to process.
 
@@ -37,8 +37,8 @@ To select specific task, run and atlas, please refer to your filename: `sub-{}_s
 `--run`: Run to process.
 
 
-### Phenotype precision
-Required format and columns are indicated in bold, optional in italic.
+### Phenotype information
+Required columns are indicated in bold, optional in italic.
 |   participants_id  |    age     |     sex    |  diagnosis | *medication* | *sequence* |   *scan*   |
 |--------------------|------------|------------|------------|--------------|------------|------------|
 | sub-01             |   24       |      F     |     HC     |      NA      |     3T     |   Siemens  |
@@ -46,7 +46,7 @@ Required format and columns are indicated in bold, optional in italic.
 
 From your phenotype file you can indicate the following flags:
 
-`--group`: Indicate the column name. Group comparison to perform (e.g. diagnosis).
+`--group`: Group comparison to perform (e.g. diagnosis). Indicate the column name. 
 
 `--case_id`: Indicate the variable name of your case groupe (e.g. SCHZ).
 

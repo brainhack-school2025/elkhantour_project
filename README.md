@@ -3,7 +3,7 @@
 ## Background 
 The reproducibility crisis in neuroimaging has affected many research domains, and psychiatric research is no exception <sup>[1](https://doi.org/10.1016/j.bpsc.2022.12.006)</sup>. Indeed, psychiatric studies using neuroimaging tools have long struggled with poor reproducibility, largely due to small sample sizes and heterogeneity in analysis methods.
 
-To address this issue, initiatives such as the ENIGMA consortium (Enhancing NeuroImaging Genetics through Meta-Analyses) were launched <sup>[2](https://doi.org/10.1007/s11682-013-9269-5)</sup>. ENIGMA is a consortium comprising numerous research sites and organized into several Disease Working Groups that focus on most major psychiatric conditions. It promotes a collaborative framework: while data remain at local sites, analyses follow standardized protocols, enabling large-scale meta-analyses across cohorts.
+To address this issue, initiatives such as the ENIGMA consortium (Enhancing NeuroImaging Genetics through Meta-Analyses) were launched <sup>[2](https://doi.org/10.1007/s11682-013-9269-5)</sup>. ENIGMA is a consortium comprising international research sites and organized into several Disease Working Groups that focus on most major psychiatric conditions. It promotes a collaborative framework: while data remain at local sites, analyses follow standardized protocols, enabling large-scale meta-analyses across cohorts.
 
 This approach has proven successful for structural and diffusion MRI, thanks to the development of open and reproducible protocols (https://enigma.ini.usc.edu/protocols/). In this context, Waller et al., 2020 developed HALFpipe <sup>[3](https://doi.org/10.1002/hbm.25829)</sup>, an open-source software that facilitates the preprocessing and extraction of connectivity matrices from functional MRI data. However, no standard tools has yet been proposed by ENIGMA for statistical analyses of functional connectivity matrices.
 
@@ -32,7 +32,7 @@ This project uses the following tools and standards to ensure reproducibility, o
    - **Website with MyST**
 
 ## Data 
-To test each the integration of the pipeline, toy data will be generated.
+To test the integration of the pipeline, toy data will be generated.
 
 The data have been generated randomly using `numpy` and `pandas`.
 
@@ -40,19 +40,9 @@ Local tests have been made base on [Giga-connectome outputs](https://giga-connec
 
 ## Deliverables in Week 4
 1. Python scripts following the BIDS workflow: 
-    - The original code has been separated into modules and functions to facilitate collaborative work. 
-
 2. A python package ready to be used:
-    - Set up with UV 
-    - Custumize to perform tests
-
-3.  A GitHub repository with integration test: 
-    - Two integration tests have been implemented with toy data generated using `numpy` and `pandas`. 
-    - The tests are launched automatically on GitHub when new code is pushed or a pull request is under review. 
-
+3. A GitHub repository with integration test: 
 4. A website
-   - Documentation to run and install the Library. The website was generated using Myst Markdown.
-   - Jupyter notebooks & interactive plots: Interactive plots were produced using Plotly.
 
 ## Results
 ### Progress overview
